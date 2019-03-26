@@ -1,9 +1,30 @@
+# TODO
+# - CAMERA DOESNT UPDATE WHEN SLEEP FUNCITON IS USED
+#
+
+
 import pygame
 import time
+import picamera
+import io
 
+# INIT PYGAME
 pygame.init()
-screen = pygame.display.set_mode((800,400))
-#screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
+#screen = pygame.display.set_mode((800,400))
+screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
+
+# INIT PICAMERA
+camera = picamera.PiCamera()
+camera.resolution = (1280, 720)
+camera.crop = (0.0, 0.0, 1.0, 1.0)
+camera.rotation = 270
+
+xCam = (screen.get_width() - camera.resolution[0]) / 2
+yCam = (screen.get_height() - camera.resolution[1]) / 2
+
+# INIT BUFFER
+rgb = bytearray(camera.resolution[0] * camera.resolution[1] * 3)
+
 done = False
 font_h1 = pygame.font.SysFont('Comic Sans MS', 300)
 font_h2 = pygame.font.SysFont('Comic Sans MS', 66)
@@ -28,69 +49,69 @@ def showScreenText(txt, font):
     pygame.display.update()
 
 def cameraTrigger():
-    screen.fill((255,0,0))
+    screen.fill((255,255,255))
     pygame.display.update()
     time.sleep(0.1)
-    screen.fill((255,255,255))
-    pygame.display.update()
 
+def showCameraImage():
+    if img:
+        screen.blit(img, (xCam, yCam))
 
 def screen_standby():
-    showScreenText("standby", font_h2)
-    #pygame.display.update()
+    showCameraImage()
+    showScreenText("push the button", font_h2)
 
 def screen_getReady():
-    #showScreenText("get ready 3..2..1..")
+    showCameraImage()
     showScreenText("GET READY!!!", font_h2)
     time.sleep(2)
-    screen.fill((255,255,255))
+    showCameraImage()
     pygame.display.update()
     showScreenText("3", font_h1)
     time.sleep(1)
-    screen.fill((255,255,255))
+    showCameraImage()
     pygame.display.update()
     showScreenText("2", font_h1)
     time.sleep(1)
-    screen.fill((255,255,255))
+    showCameraImage()
     pygame.display.update()
     showScreenText("1", font_h1)
     time.sleep(1)
-    #pygame.display.update()
 
 def screen_takePicture():
     sleeptime = 1.3
-    #showScreenText("0..clickclickclick...", font_h2)
+    showCameraImage()
+
     showScreenText("pic 1", font_h2)
     time.sleep(sleeptime)
     cameraTrigger()
+    showCameraImage()
 
     showScreenText("pic 2", font_h2)
     time.sleep(sleeptime)
     cameraTrigger()
+    showCameraImage()
 
     showScreenText("pic 3", font_h2)
     time.sleep(sleeptime)
     cameraTrigger()
+    showCameraImage()
 
     showScreenText("pic 4", font_h2)
     time.sleep(sleeptime)
     cameraTrigger()
+    showCameraImage()
 
     showScreenText("pic 5", font_h2)
     time.sleep(sleeptime)
     cameraTrigger()
 
-    time.sleep(1)
-    #pygame.display.update()
-
 def screen_saveImage():
     showScreenText("save image", font_h2)
     time.sleep(3)
-    #pygame.display.update()
 
 def screen_showImage():
     showScreenText("show gif -> again?", font_h2)
-    #pygame.display.update()
 
 
 # APP LOOP
@@ -100,7 +121,10 @@ while not done:
             done = True
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_w:
-                STATE += 1
+                if STATE == 4:
+                    STATE = 0
+                else:
+                    STATE += 1
                 print(STATE)
             elif event.key == pygame.K_s:
                 STATE -= 1
@@ -108,6 +132,17 @@ while not done:
             elif event.key == pygame.K_q:
                 done = True
 
+    # START CAMERA STREAM
+    stream = io.BytesIO()
+    camera.capture(stream, use_video_port=True, format='rgb')
+    stream.seek(0)
+    stream.readinto(rgb)
+    stream.close()
+    img = pygame.image.frombuffer(rgb[0:
+          (camera.resolution[0] * camera.resolution[1] * 3)],
+           camera.resolution, 'RGB')
+
+    # SHOW PHOTOBOOTH SCREENS
     screen.fill((255,255,255))
 
     if STATE == 0:
