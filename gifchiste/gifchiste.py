@@ -7,6 +7,7 @@ import pygame
 import time
 import picamera
 import io
+import threading
 
 # INIT PYGAME
 pygame.init()
@@ -58,49 +59,49 @@ def showCameraImage():
         screen.blit(img, (xCam, yCam))
 
 def screen_standby():
-    showCameraImage()
+    #showCameraImage()
     showScreenText("push the button", font_h2)
 
 def screen_getReady():
-    showCameraImage()
+    #showCameraImage()
     showScreenText("GET READY!!!", font_h2)
     time.sleep(2)
-    showCameraImage()
+    #showCameraImage()
     pygame.display.update()
     showScreenText("3", font_h1)
     time.sleep(1)
-    showCameraImage()
+    #showCameraImage()
     pygame.display.update()
     showScreenText("2", font_h1)
     time.sleep(1)
-    showCameraImage()
+    #showCameraImage()
     pygame.display.update()
     showScreenText("1", font_h1)
     time.sleep(1)
 
 def screen_takePicture():
     sleeptime = 1.3
-    showCameraImage()
+    #showCameraImage()
 
     showScreenText("pic 1", font_h2)
     time.sleep(sleeptime)
     cameraTrigger()
-    showCameraImage()
+    #showCameraImage()
 
     showScreenText("pic 2", font_h2)
     time.sleep(sleeptime)
     cameraTrigger()
-    showCameraImage()
+    #showCameraImage()
 
     showScreenText("pic 3", font_h2)
     time.sleep(sleeptime)
     cameraTrigger()
-    showCameraImage()
+    #showCameraImage()
 
     showScreenText("pic 4", font_h2)
     time.sleep(sleeptime)
     cameraTrigger()
-    showCameraImage()
+    #showCameraImage()
 
     showScreenText("pic 5", font_h2)
     time.sleep(sleeptime)
@@ -112,6 +113,9 @@ def screen_saveImage():
 
 def screen_showImage():
     showScreenText("show gif -> again?", font_h2)
+
+thread1 = threading.Thread(showCameraImage, )
+thread1.start()
 
 
 # APP LOOP
