@@ -238,10 +238,12 @@ def start_photobooth():
 				print(filename)
 				GPIO.output(led_pin,False) #turn off the LED
 				camera.stop_preview()
-				# MY NEW CODE FOR SHUTTER
-				show_image(real_path + "/images/99_shutter.png"
-				# END OF MY NEW CODE FOR SHUTTER
 
+				# MY NEW CODE FOR SHUTTER
+				time.sleep(1)
+				show_image(real_path + "/images/99_shutter.png")
+				time.sleep(1)
+				# END OF MY NEW CODE FOR SHUTTER
 
 				show_image(real_path + "/images/03_pose" + str(i) + ".png")
 				time.sleep(capture_delay) # pause in-between shots
