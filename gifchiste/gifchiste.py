@@ -26,7 +26,7 @@ btn_pin = 24 # pin for the start button
 
 total_pics = 4 # number of pics to be taken
 capture_delay = 1 # delay between pics
-prep_delay = 5 # number of seconds at step 1 as users prep to have photo taken
+prep_delay = 3 # default = 5 -  number of seconds at step 1 as users prep to have photo taken
 gif_delay = 50 # How much time between frames in the animated gif
 restart_delay = 10 # how long to display finished message before beginning a new session
 test_server = 'www.google.com'
@@ -198,8 +198,8 @@ def start_photobooth():
 
 	print "Get Ready"
 	GPIO.output(led_pin,False);
-	show_image(real_path + "/instructions.png")
-	sleep(prep_delay)
+	show_image(real_path + "/images/02_strikePose.png")
+	sleep(prep_delay) # default 5 seconds
 
 	# clear the screen
 	clear_screen()
@@ -233,12 +233,17 @@ def start_photobooth():
 				time.sleep(2) #warm up camera
 				GPIO.output(led_pin,True) #turn on the LED
 				filename = config.file_path + now + '-0' + str(i) + '.jpg'
-				camera.hflip = False # flip back when taking photo
-				camera.capture(filename)
+				# camera.hflip = False # flip back when taking photo
+				# camera.capture(filename)
 				print(filename)
 				GPIO.output(led_pin,False) #turn off the LED
 				camera.stop_preview()
-				show_image(real_path + "/pose" + str(i) + ".png")
+				# MY NEW CODE FOR SHUTTER
+				show_image(real_path + "/images/99_shutter.png"
+				# END OF MY NEW CODE FOR SHUTTER
+
+
+				show_image(real_path + "/images/03_pose" + str(i) + ".png")
 				time.sleep(capture_delay) # pause in-between shots
 				clear_screen()
 				if i == total_pics+1:
@@ -270,7 +275,7 @@ def start_photobooth():
 	if config.post_online:
 		show_image(real_path + "/uploading.png")
 	else:
-		show_image(real_path + "/processing.png")
+		show_image(real_path + "/images/04_makingGIF.png")
 
 	if config.make_gifs: # make the gifs
 		if config.hi_res_pics:
@@ -339,10 +344,10 @@ def start_photobooth():
 	if config.post_online:
 		show_image(real_path + "/finished.png")
 	else:
-		show_image(real_path + "/finished2.png")
+		show_image(real_path + "/images/05_finished.png")
 
 	time.sleep(restart_delay)
-	show_image(real_path + "/intro.png");
+	show_image(real_path + "/images/01_pushButton.png");
 	GPIO.output(led_pin,True) #turn on the LED
 
 ####################
@@ -360,7 +365,7 @@ for x in range(0, 5): #blink light to show the app is running
 	GPIO.output(led_pin,False)
 	sleep(0.25)
 
-show_image(real_path + "/intro.png");
+show_image(real_path + "/images/01_pushButton.png");
 
 while True:
 	GPIO.output(led_pin,True); #turn on the light showing users they can push the button
