@@ -28,7 +28,7 @@ total_pics = 4 # number of pics to be taken
 capture_delay = 1 # delay between pics
 prep_delay = 3 # default = 5 -  number of seconds at step 1 as users prep to have photo taken
 gif_delay = 50 # How much time between frames in the animated gif
-restart_delay = 10 # how long to display finished message before beginning a new session
+restart_delay = 4 # how long to display finished message before beginning a new session
 test_server = 'www.google.com'
 
 # full frame of v1 camera is 2592x1944. Wide screen max is 2592,1555
@@ -45,7 +45,7 @@ transform_x = config.monitor_w # how wide to scale the jpg when replaying
 transfrom_y = config.monitor_h # how high to scale the jpg when replaying
 offset_x = 0 # how far off to left corner to display photos
 offset_y = 0 # how far off to left corner to display photos
-replay_delay = 1 # how much to wait in-between showing pics on-screen after taking
+replay_delay = 0.5 # how much to wait in-between showing pics on-screen after taking
 replay_cycles = 2 # how many times to show each photo on-screen after taking
 
 ####################
@@ -199,7 +199,7 @@ def start_photobooth():
 	print "Get Ready"
 	GPIO.output(led_pin,False);
 	show_image(real_path + "/images/02_strikePose.png")
-	sleep(prep_delay) # default 5 seconds
+	sleep(prep_delay)
 
 	# clear the screen
 	clear_screen()
@@ -228,25 +228,22 @@ def start_photobooth():
 	if config.capture_count_pics:
 		try: # take the photos
 			for i in range(1,total_pics+1):
+				# show pose image
+				show_image(real_path + "/images/03_pose" + str(i) + ".png")
+				time.sleep(capture_delay) # pause in-between shots
+				clear_screen()
+
+				# make and save image
 				camera.hflip = True # preview a mirror image
 				camera.start_preview(resolution=(config.monitor_w, config.monitor_h)) # start preview at low res but the right ratio
 				time.sleep(2) #warm up camera
 				GPIO.output(led_pin,True) #turn on the LED
 				filename = config.file_path + now + '-0' + str(i) + '.jpg'
 				# camera.hflip = False # flip back when taking photo
-				# camera.capture(filename)
+				camera.capture(filename)
 				print(filename)
 				GPIO.output(led_pin,False) #turn off the LED
 				camera.stop_preview()
-
-				# MY NEW CODE FOR SHUTTER
-				time.sleep(1)
-				show_image(real_path + "/images/99_shutter.png")
-				time.sleep(1)
-				# END OF MY NEW CODE FOR SHUTTER
-
-				show_image(real_path + "/images/03_pose" + str(i) + ".png")
-				time.sleep(capture_delay) # pause in-between shots
 				clear_screen()
 				if i == total_pics+1:
 					break
