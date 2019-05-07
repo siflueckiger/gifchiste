@@ -24,7 +24,7 @@ from signal import alarm, signal, SIGALRM, SIGKILL
 led_pin = 4 # LED 
 btn_pin = 24 # pin for the start button
 
-total_pics = 4 # number of pics to be taken
+total_pics = 5 # number of pics to be taken
 capture_delay = 1 # delay between pics
 prep_delay = 3 # default = 5 -  number of seconds at step 1 as users prep to have photo taken
 gif_delay = 50 # How much time between frames in the animated gif
@@ -95,9 +95,10 @@ def input(events):
 
 #delete files in folder
 def clear_pics(channel):
-	files = glob.glob(config.file_path + '*')
+	files = glob.glob(config.file_path  + '*')
 	for f in files:
 		os.remove(f)
+
 	#light the lights in series to show completed
 	print "Deleted previous pics"
 	for x in range(0, 3): #blink light
@@ -255,6 +256,7 @@ def start_photobooth():
 				time.sleep(2) #warm up camera
 				GPIO.output(led_pin,True) #turn on the LED
 				filename = config.file_path + now + '-0' + str(i) + '.jpg'
+				print(filename)				
 				# camera.hflip = False # flip back when taking photo
 				camera.capture(filename)
 				print(filename)
@@ -288,7 +290,7 @@ def start_photobooth():
 	print "Creating an animated gif"
 
 	if config.post_online:
-		show_image(real_path + "/uploading.png")
+		show_image(real_path + "/images/uploading.png")
 	else:
 		show_image(real_path + "/images/04_makingGIF.png")
 
@@ -358,7 +360,7 @@ def start_photobooth():
 	print "Done"
 
 	if config.post_online:
-		show_image(real_path + "/finished.png")
+		show_image(real_path + "/images/finished.png")
 	else:
 		show_image(real_path + "/images/05_finished.png")
 
