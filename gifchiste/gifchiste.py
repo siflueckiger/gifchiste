@@ -281,6 +281,7 @@ def start_photobooth():
 			# first make a small version of each image. Tumblr's max animated gif's are 500 pixels wide.
 			for x in range(1, total_pics+1): #batch process all the images
 				graphicsmagick = "gm convert -size 500x500 " + config.file_path + now + "-0" + str(x) + ".jpg -thumbnail 500x500 " + config.file_path + now + "-0" + str(x) + "-sm.jpg"
+				# graphicsmagick = "gm convert -size 1024x1024 " + config.file_path + now + "-0" + str(x) + ".jpg -thumbnail 1024x1024 " + config.file_path + now + "-0" + str(x) + "-sm.jpg"
 				os.system(graphicsmagick) #do the graphicsmagick action
 
 			graphicsmagick = "gm convert -delay " + str(gif_delay) + " " + config.file_path + now + "*-sm.jpg " + config.file_path + now + ".gif" 
